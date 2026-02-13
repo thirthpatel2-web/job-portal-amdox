@@ -22,3 +22,21 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# ===============================
+# Backend Specific
+# ===============================
+backend/node_modules/
+frontend/node_modules/
+
+# Environment files
+.env
+backend/.env
+frontend/.env
+
+# File uploads
+backend/uploads/
+
+# Build folders
+frontend/dist/
+backend/dist/

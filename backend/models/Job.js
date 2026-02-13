@@ -29,6 +29,23 @@ const jobSchema = new mongoose.Schema(
     salary: {
       type: String,
     },
+    qualification: {
+  type: String,
+},
+
+experience: {
+  type: String,
+},
+
+responsibilities: {
+  type: String,
+},
+
+skillsRequired: [
+  {
+    type: String,
+  }
+],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -10,12 +10,21 @@ const PostJob = () => {
   const [location, setLocation] = useState("");
   const [jobType, setJobType] = useState("");
   const [salary, setSalary] = useState("");
+  const [qualification, setQualification] = useState("");
+  const [experience, setExperience] = useState("");
+  const [responsibilities, setResponsibilities] = useState("");
+  const [skillsRequired, setSkillsRequired] = useState("");
 
-  const { user } = useContext(AuthContext);
+  const { auth, token } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!auth || !token) {
+      alert("Please login");
+      return;
+    }
 
     try {
       await API.post(
@@ -27,18 +36,25 @@ const PostJob = () => {
           location,
           jobType,
           salary,
+          qualification,
+          experience,
+          responsibilities,
+          skillsRequired: skillsRequired
+            ? skillsRequired.split(",").map((s) => s.trim())
+            : [],
         },
         {
           headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       alert("Job posted successfully");
-      navigate("/employer");
+      navigate("/employer/dashboard");
     } catch (error) {
-      alert("Failed to post job");
+      console.log("POST JOB ERROR:", error.response?.data);
+      alert(error.response?.data?.message || "Failed to post job");
     }
   };
 
@@ -103,6 +119,37 @@ const PostJob = () => {
 
         <input
           type="text"
+          placeholder="Qualification"
+          className="w-full mb-3 p-3 border rounded-md"
+          value={qualification}
+          onChange={(e) => setQualification(e.target.value)}
+        />
+
+        <input
+          type="text"
+          placeholder="Experience (e.g., 2+ years)"
+          className="w-full mb-3 p-3 border rounded-md"
+          value={experience}
+          onChange={(e) => setExperience(e.target.value)}
+        />
+
+        <textarea
+          placeholder="Responsibilities"
+          className="w-full mb-3 p-3 border rounded-md"
+          value={responsibilities}
+          onChange={(e) => setResponsibilities(e.target.value)}
+        />
+
+        <input
+          type="text"
+          placeholder="Skills (comma separated)"
+          className="w-full mb-3 p-3 border rounded-md"
+          value={skillsRequired}
+          onChange={(e) => setSkillsRequired(e.target.value)}
+        />
+
+        <input
+          type="text"
           placeholder="Salary"
           className="w-full mb-6 p-3 border rounded-md"
           value={salary}
@@ -110,13 +157,11 @@ const PostJob = () => {
         />
 
         <button
-  className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl 
-             hover:bg-indigo-700 
-             transition-all duration-200"
->
-  Post Job
-</button>
-
+          type="submit"
+          className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition-all duration-200"
+        >
+          Post Job
+        </button>
       </form>
     </div>
   );
